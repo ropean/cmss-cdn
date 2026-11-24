@@ -1,0 +1,38 @@
+{
+  "name": "cmss-cdn",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static assets (fonts, later js/css/images) served from https://cdn.cmss.io on Cloudflare Pages",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "check:format": "oxfmt --check scripts tests catalog",
+    "check:names": "node scripts/check-names.mjs",
+    "format": "oxfmt --write scripts tests catalog",
+    "lint": "oxlint scripts tests",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "serve": "node scripts/serve.mjs",
+    "test": "node --test tests/"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@fontsource-variable/archivo": "5.3.0",
+    "@fontsource-variable/archivo-narrow": "5.3.0",
+    "@fontsource-variable/hanken-grotesk": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@fontsource-variable/lora": "5.3.0",
+    "@fontsource-variable/manrope": "5.3.0",
+    "@fontsource-variable/newsreader": "5.3.0",
+    "@fontsource-variable/noto-sans-sc": "5.3.1",
+    "@fontsource-variable/noto-serif-sc": "5.3.1",
+    "@fontsource-variable/plus-jakarta-sans": "5.3.0",
+    "@fontsource-variable/space-grotesk": "5.3.0",
+    "@fontsource/spectral": "5.3.0",
+    "oxfmt": "0.80.0",
+    "oxlint": "1.95.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

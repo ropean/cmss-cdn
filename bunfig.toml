@@ -1,0 +1,3 @@
+[install]
+# New dependencies are saved with an exact version (CLAUDE.md "dependencies are pinned").
+exact = true

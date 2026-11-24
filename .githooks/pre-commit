@@ -1,0 +1,5 @@
+#!/bin/sh
+# Pre-commit: run bun run check (names + lint + format + test + build).
+# Installed by the `prepare` script (core.hooksPath = .githooks).
+echo "⏳ pre-commit: running bun run check…"
+bun run check

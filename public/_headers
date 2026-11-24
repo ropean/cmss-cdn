@@ -1,0 +1,32 @@
+# Cloudflare Pages response headers (docs/SPEC.md rules 3 and 5).
+# Every path is cross-origin readable; versioned files never change, so they cache for a year.
+
+/*
+  Access-Control-Allow-Origin: *
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/fonts/*/*/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/js/*/*/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/*/*/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*/*/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Catalog and search page change with every deploy: always revalidate.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/fonts/index.json
+  Cache-Control: public, max-age=0, must-revalidate

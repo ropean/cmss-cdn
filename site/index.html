@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>cmss CDN</title>
+    <meta name="description" content="Search the static assets served from cdn.cmss.io: fonts, scripts, stylesheets, images." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232563eb'/%3E%3Cpath d='M9 22V10h3l4 7 4-7h3v12h-3v-7l-4 7-4-7v7z' fill='%23fff'/%3E%3C/svg%3E" />
+    <style>
+      :root {
+        --bg: #f7f8fa;
+        --surface: #ffffff;
+        --text: #15181e;
+        --muted: #5b6472;
+        --line: #e2e6ec;
+        --accent: #2563eb;
+        --accent-soft: #e8efff;
+        --code-bg: #f0f2f6;
+        --ok: #15803d;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0f1217;
+          --surface: #171b22;
+          --text: #e8ebf0;
+          --muted: #98a1b0;
+          --line: #262c36;
+          --accent: #6b9bff;
+          --accent-soft: #1c2740;
+          --code-bg: #1f242d;
+          --ok: #4ade80;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0f1217;
+        --surface: #171b22;
+        --text: #e8ebf0;
+        --muted: #98a1b0;
+        --line: #262c36;
+        --accent: #6b9bff;
+        --accent-soft: #1c2740;
+        --code-bg: #1f242d;
+        --ok: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.5 system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 16px 64px;
+      }
+      header {
+        padding: 36px 0 20px;
+      }
+      h1 {
+        margin: 0 0 4px;
+        font-size: 26px;
+        letter-spacing: -0.01em;
+      }
+      .sub {
+        margin: 0;
+        color: var(--muted);
+      }
+      .sub code,
+      footer code {
+        background: var(--code-bg);
+        padding: 1px 6px;
+        border-radius: 5px;
+        font-size: 13px;
+      }
+      .bar {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: var(--bg);
+        padding: 10px 0 12px;
+      }
+      .search {
+        width: 100%;
+        height: 46px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        font-size: 16px;
+      }
+      .search:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .chip {
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 4px 12px;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .chip[aria-pressed="true"] {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .count {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .grid {
+        display: grid;
+        gap: 12px;
+        margin-top: 8px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+      .head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .title {
+        font-size: 17px;
+        font-weight: 650;
+      }
+      .badge {
+        font-size: 12px;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 0 6px;
+      }
+      .badge.type {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 13px;
+        margin-left: auto;
+      }
+      .preview {
+        margin: 10px 0 4px;
+        font-size: 24px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+      .preview.img img {
+        max-height: 96px;
+        max-width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--code-bg);
+      }
+      .row {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .row code {
+        flex: 1;
+        min-width: 0;
+        display: block;
+        background: var(--code-bg);
+        border-radius: 8px;
+        padding: 7px 10px;
+        font: 12.5px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .copy {
+        flex: none;
+        min-width: 64px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 8px;
+        padding: 0 12px;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .copy:hover {
+        border-color: var(--accent);
+      }
+      .copy.done {
+        color: var(--ok);
+        border-color: var(--ok);
+      }
+      .label {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .empty,
+      .error {
+        text-align: center;
+        color: var(--muted);
+        padding: 48px 0;
+      }
+      footer {
+        margin-top: 32px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      footer a {
+        color: var(--accent);
+      }
+      @media (max-width: 520px) {
+        h1 {
+          font-size: 22px;
+        }
+        .meta {
+          margin-left: 0;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>cmss CDN</h1>
+        <p class="sub">
+          Static assets for cmss sites — <code>https://cdn.cmss.io/&lt;type&gt;/&lt;name&gt;/&lt;version&gt;/&lt;file&gt;</code>
+        </p>
+      </header>
+
+      <div class="bar">
+        <input
+          id="q"
+          class="search"
+          type="search"
+          placeholder="Search fonts, scripts, styles, images…   ( / )"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Search assets"
+        />
+        <div class="chips" id="chips" role="group" aria-label="Type"></div>
+        <p class="count" id="count" aria-live="polite"></p>
+      </div>
+
+      <main id="list" class="grid"></main>
+
+      <footer>
+        Every version is immutable and served with CORS <code>*</code>. Catalog:
+        <a href="index.json">index.json</a> · fonts only: <a href="fonts/index.json">fonts/index.json</a>.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+        var TYPES = ["fonts", "js", "css", "images"];
+        var LABEL = { fonts: "Fonts", js: "Scripts", css: "Styles", images: "Images" };
+        var IMG = /\.(png|jpe?g|gif|webp|avif|svg|ico)$/i;
+
+        var $q = document.getElementById("q");
+        var $chips = document.getElementById("chips");
+        var $count = document.getElementById("count");
+        var $list = document.getElementById("list");
+        var items = [];
+        var base = location.origin;
+        var type = "";
+        var loaded = {};
+
+        function el(tag, cls, text) {
+          var e = document.createElement(tag);
+          if (cls) e.className = cls;
+          if (text != null) e.textContent = text;
+          return e;
+        }
+
+        function human(n) {
+          if (n < 1024) return n + " B";
+          if (n < 1048576) return (n / 1024).toFixed(0) + " KB";
+          return (n / 1048576).toFixed(1) + " MB";
+        }
+
+        function sample(item) {
+          return /-sc$/.test(item.name) ? "天地玄黄 宇宙洪荒 Aa 0123" : "The quick brown fox jumps over the lazy dog 0123";
+        }
+
+        function abs(path) {
+          return base.replace(/\/$/, "") + "/" + path;
+        }
+
+        function snippetOf(item) {
+          var url = item.url; // always the canonical cdn.cmss.io address, also on a preview host
+          if (item.type === "fonts" || item.type === "css")
+            return '<link rel="stylesheet" href="' + url + '" />';
+          if (item.type === "js") return '<script src="' + url + '"><\/script>';
+          return url;
+        }
+
+        function copyButton(text) {
+          var b = el("button", "copy", "Copy");
+          b.type = "button";
+          b.addEventListener("click", function () {
+            var done = function () {
+              b.textContent = "Copied";
+              b.classList.add("done");
+              setTimeout(function () {
+                b.textContent = "Copy";
+                b.classList.remove("done");
+              }, 1200);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done, function () {});
+            } else {
+              var t = el("textarea");
+              t.value = text;
+              document.body.appendChild(t);
+              t.select();
+              try {
+                document.execCommand("copy");
+                done();
+              } catch (e) {}
+              document.body.removeChild(t);
+            }
+          });
+          return b;
+        }
+
+        function line(text) {
+          var r = el("div", "row");
+          r.appendChild(el("code", "", text));
+          r.appendChild(copyButton(text));
+          return r;
+        }
+
+        function loadFont(item) {
+          var key = item.name + "@" + item.version;
+          if (loaded[key]) return;
+          loaded[key] = true;
+          var l = el("link");
+          l.rel = "stylesheet";
+          l.href = abs(item.entry);
+          document.head.appendChild(l);
+        }
+
+        var io =
+          "IntersectionObserver" in window
+            ? new IntersectionObserver(
+                function (entries) {
+                  entries.forEach(function (en) {
+                    if (!en.isIntersecting) return;
+                    io.unobserve(en.target);
+                    loadFont(en.target._item);
+                  });
+                },
+                { rootMargin: "200px" },
+              )
+            : null;
+
+        function card(item) {
+          var c = el("article", "card");
+          var head = el("div", "head");
+          head.appendChild(el("span", "title", item.title || item.name));
+          head.appendChild(el("span", "badge type", item.type));
+          head.appendChild(el("span", "badge", item.version));
+          head.appendChild(
+            el("span", "meta", item.files + " file" + (item.files === 1 ? "" : "s") + " · " + human(item.bytes)),
+          );
+          c.appendChild(head);
+
+          if (item.type === "fonts") {
+            var p = el("div", "preview", sample(item));
+            p.style.fontFamily = '"' + item.title + '", system-ui, sans-serif';
+            p._item = item;
+            c.appendChild(p);
+            if (io) io.observe(p);
+            else loadFont(item);
+          } else if (item.type === "images" && item.fileList) {
+            var first = item.fileList.filter(function (f) {
+              return IMG.test(f);
+            })[0];
+            if (first) {
+              var box = el("div", "preview img");
+              var img = el("img");
+              img.loading = "lazy";
+              img.alt = item.name;
+              img.src = abs(item.type + "/" + item.name + "/" + item.version + "/" + first);
+              box.appendChild(img);
+              c.appendChild(box);
+            }
+          }
+
+          c.appendChild(el("p", "label", item.type === "images" ? "URL" : "HTML"));
+          c.appendChild(line(snippetOf(item)));
+          if (item.type === "fonts") {
+            c.appendChild(el("p", "label", "CSS"));
+            c.appendChild(line('font-family: "' + item.title + '", sans-serif;'));
+          }
+          return c;
+        }
+
+        function match(item, words) {
+          var hay = (item.name + " " + (item.title || "") + " " + item.type + " " + item.version).toLowerCase();
+          return words.every(function (w) {
+            return hay.indexOf(w) !== -1;
+          });
+        }
+
+        function render() {
+          var words = $q.value.toLowerCase().split(/\s+/).filter(Boolean);
+          var shown = items.filter(function (i) {
+            return (!type || i.type === type) && match(i, words);
+          });
+          $list.textContent = "";
+          shown.forEach(function (i) {
+            $list.appendChild(card(i));
+          });
+          $count.textContent = shown.length + " of " + items.length + " item" + (items.length === 1 ? "" : "s");
+          if (!shown.length) $list.appendChild(el("div", "empty", "Nothing matches."));
+          var u = new URL(location.href);
+          if ($q.value) u.searchParams.set("q", $q.value);
+          else u.searchParams.delete("q");
+          if (type) u.searchParams.set("type", type);
+          else u.searchParams.delete("type");
+          history.replaceState(null, "", u);
+        }
+
+        function renderChips() {
+          $chips.textContent = "";
+          [""].concat(TYPES).forEach(function (t) {
+            var n = t
+              ? items.filter(function (i) {
+                  return i.type === t;
+                }).length
+              : items.length;
+            if (t && !n) return;
+            var b = el("button", "chip", (t ? LABEL[t] : "All") + " · " + n);
+            b.type = "button";
+            b.setAttribute("aria-pressed", String(type === t));
+            b.addEventListener("click", function () {
+              type = t;
+              renderChips();
+              render();
+            });
+            $chips.appendChild(b);
+          });
+        }
+
+        $q.addEventListener("input", render);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "/" && document.activeElement !== $q) {
+            e.preventDefault();
+            $q.focus();
+          }
+        });
+
+        var params = new URL(location.href).searchParams;
+        $q.value = params.get("q") || "";
+        type = TYPES.indexOf(params.get("type")) !== -1 ? params.get("type") : "";
+
+        fetch("index.json", { cache: "no-cache" })
+          .then(function (r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+          })
+          .then(function (doc) {
+            items = doc.items || [];
+            // Served from cdn.cmss.io the catalog's base is that origin; any other host (a preview
+            // deployment, a local server) uses its own origin so the links keep working.
+            base = location.hostname === new URL(doc.base).hostname ? doc.base : location.origin;
+            renderChips();
+            render();
+          })
+          .catch(function (e) {
+            $list.textContent = "";
+            $list.appendChild(el("div", "error", "Could not load index.json (" + e.message + ")."));
+          });
+      })();
+    </script>
+  </body>
+</html>

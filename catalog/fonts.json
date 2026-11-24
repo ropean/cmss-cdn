@@ -1,0 +1,89 @@
+[
+  {
+    "id": "archivo",
+    "family": "Archivo",
+    "pkg": "@fontsource-variable/archivo",
+    "css": ["wght.css", "wght-italic.css"]
+  },
+  {
+    "id": "archivo-narrow",
+    "family": "Archivo Narrow",
+    "pkg": "@fontsource-variable/archivo-narrow",
+    "css": ["wght.css", "wght-italic.css"]
+  },
+  {
+    "id": "hanken-grotesk",
+    "family": "Hanken Grotesk",
+    "pkg": "@fontsource-variable/hanken-grotesk",
+    "css": ["wght.css", "wght-italic.css"]
+  },
+  {
+    "id": "jetbrains-mono",
+    "family": "JetBrains Mono",
+    "pkg": "@fontsource-variable/jetbrains-mono",
+    "css": ["wght.css", "wght-italic.css"]
+  },
+  {
+    "id": "lora",
+    "family": "Lora",
+    "pkg": "@fontsource-variable/lora",
+    "css": ["wght.css", "wght-italic.css"]
+  },
+  {
+    "id": "manrope",
+    "family": "Manrope",
+    "pkg": "@fontsource-variable/manrope",
+    "css": ["wght.css"]
+  },
+  {
+    "id": "newsreader",
+    "family": "Newsreader",
+    "pkg": "@fontsource-variable/newsreader",
+    "css": ["wght.css", "wght-italic.css"]
+  },
+  {
+    "id": "noto-sans-sc",
+    "family": "Noto Sans SC",
+    "pkg": "@fontsource-variable/noto-sans-sc",
+    "css": ["wght.css"]
+  },
+  {
+    "id": "noto-serif-sc",
+    "family": "Noto Serif SC",
+    "pkg": "@fontsource-variable/noto-serif-sc",
+    "css": ["wght.css"]
+  },
+  {
+    "id": "plus-jakarta-sans",
+    "family": "Plus Jakarta Sans",
+    "pkg": "@fontsource-variable/plus-jakarta-sans",
+    "css": ["wght.css", "wght-italic.css"]
+  },
+  {
+    "id": "space-grotesk",
+    "family": "Space Grotesk",
+    "pkg": "@fontsource-variable/space-grotesk",
+    "css": ["wght.css"]
+  },
+  {
+    "id": "spectral",
+    "family": "Spectral",
+    "pkg": "@fontsource/spectral",
+    "css": [
+      "200.css",
+      "200-italic.css",
+      "300.css",
+      "300-italic.css",
+      "400.css",
+      "400-italic.css",
+      "500.css",
+      "500-italic.css",
+      "600.css",
+      "600-italic.css",
+      "700.css",
+      "700-italic.css",
+      "800.css",
+      "800-italic.css"
+    ]
+  }
+]
