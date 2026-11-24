@@ -15,9 +15,10 @@ The full URL and naming rules are in [docs/SPEC.md](docs/SPEC.md) — read it be
 ```bash
 bun install             # or pnpm install (Node >= 22)
 bun run build           # dist/ — fonts from the Fontsource packages + public/ + catalog + search page
-bun run serve [port]    # preview dist/ at http://localhost:8787 (CORS + cache headers like production)
+pnpm dev                # build, then preview dist/ at http://localhost:5003 (CORS + cache headers like production)
 bun run check           # names + lint + format + test + build (the pre-commit hook runs it)
 bun run format          # oxfmt --write
+pnpm favicon            # regenerate public/favicon.ico from public/favicon.svg (after editing the svg)
 ```
 
 ## Layout
@@ -27,7 +28,7 @@ catalog/fonts.json      which fonts exist: id, family, npm package, css files to
 public/                 hand-managed assets: public/<type>/<name>/<version>/…  (js, css, images)
                         top-level files here (e.g. _headers) are copied to the site root
 site/index.html         the search page
-scripts/                build.mjs, serve.mjs, check.mjs, check-names.mjs, lib/
+scripts/                build.mjs, serve.mjs, make-favicon.mjs, check.mjs, check-names.mjs, lib/
 tests/                  node:test
 docs/SPEC.md            URL / naming / versioning rules
 dist/                   build output (gitignored) — the folder that gets deployed

@@ -28,7 +28,7 @@ publishes it through Project Hub (https://pm.cmss.io/deploy.md). Variable `PROJE
 
 ## Commands
 
-`bun run build | serve | check | format | lint | test`. Single test:
+`pnpm dev` (build + preview on :5003) `| build | check | format | lint | test | favicon` (`bun run <name>` works too). Single test:
 `node --test --test-name-pattern="<name>" tests/<file>.test.mjs`.
 
 ## Layout
@@ -37,3 +37,6 @@ publishes it through Project Hub (https://pm.cmss.io/deploy.md). Variable `PROJE
 `public/<type>/<name>/<version>/` (hand-managed assets) → `scripts/lib/assets.mjs`. Both feed
 `scripts/lib/catalog.mjs` (`index.json`). `site/index.html` is the search page. `public/_headers` is the
 response-header file (Cloudflare-style). `scripts/lib/spec.mjs` holds the naming regexes — the one place for them.
+
+`public/favicon.svg` is the source of the icon; after editing it run `pnpm favicon` to regenerate
+`public/favicon.ico` (`scripts/make-favicon.mjs`, uses `sharp`) and commit both.

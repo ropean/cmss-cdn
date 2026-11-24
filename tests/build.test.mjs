@@ -42,7 +42,14 @@ test("font stylesheets: plain family name, woff2 only, relative files/ urls that
 });
 
 test("everything in dist follows <type>/<name>/<version>/<file> (or is a root file)", () => {
-  const ROOT = new Set(["index.html", "index.json", "_headers", "fonts/index.json"]);
+  const ROOT = new Set([
+    "index.html",
+    "index.json",
+    "_headers",
+    "favicon.svg",
+    "favicon.ico",
+    "fonts/index.json",
+  ]);
   for (const f of files) {
     if (ROOT.has(f)) continue;
     const [type, name, version, ...rest] = f.split("/");
@@ -127,4 +134,33 @@ test("hand-managed assets: a name that breaks the spec fails the build", () => {
   assert.throws(bad("js/Demo/1.0.0/a.js"), /bad name/);
   assert.throws(bad("js/demo/latest/a.js"), /bad version/);
   assert.throws(bad("js/demo/1.0.0/A.js"), /bad file name/);
+});
+
+test("the search page links a favicon (svg + ico) that is published", () => {
+  const html = readFileSync(join(dist, "index.html"), "utf8");
+  assert.match(html, /<link rel="icon" href="favicon\.svg" type="image\/svg\+xml"/);
+  assert.match(html, /<link rel="icon" href="favicon\.ico"/);
+  for (const f of ["favicon.svg", "favicon.ico"]) assert.ok(files.includes(f), `${f} published`);
+  const ico = readFileSync(join(dist, "favicon.ico"));
+  assert.equal(ico.readUInt16LE(2), 1, "ICO type");
+  assert.ok(ico.readUInt16LE(4) >= 1, "ICO has images");
+});
+
+test("make-favicon: the ICO holds 16, 32 and 48 px PNG images rendered from favicon.svg", async () => {
+  const { buildIco } = await import("../scripts/make-favicon.mjs");
+  const ico = await buildIco(readFileSync(join(root, "public", "favicon.svg")));
+  assert.equal(ico.readUInt16LE(2), 1);
+  const n = ico.readUInt16LE(4);
+  assert.deepEqual(
+    Array.from({ length: n }, (_, i) => ico.readUInt8(6 + 16 * i)),
+    [16, 32, 48],
+  );
+  for (let i = 0; i < n; i++) {
+    const at = ico.readUInt32LE(6 + 16 * i + 12);
+    assert.equal(
+      ico.subarray(at, at + 8).toString("hex"),
+      "89504e470d0a1a0a",
+      `image ${i} is a PNG`,
+    );
+  }
 });

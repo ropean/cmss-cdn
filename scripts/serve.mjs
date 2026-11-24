@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // Serve dist/ locally with the same CORS and cache headers as public/_headers (rough preview).
-//   bun run serve [port]      (default 8787; run `bun run build` first)
+//   pnpm dev   (builds, then serves on http://localhost:5003; `node scripts/serve.mjs [port]` serves the last build)
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { dirname, extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const dist = join(dirname(fileURLToPath(import.meta.url)), "..", "dist");
-const port = Number(process.argv[2] ?? process.env.PORT ?? 8787);
+const port = Number(process.argv[2] ?? process.env.PORT ?? 5003);
 
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -16,6 +16,7 @@ const TYPES = {
   ".json": "application/json; charset=utf-8",
   ".woff2": "font/woff2",
   ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".webp": "image/webp",

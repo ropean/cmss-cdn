@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Build dist/ — the whole site Cloudflare Pages serves (build command: `bun run build`, output: dist).
+// Build dist/ — the whole site that gets deployed (`bun run build`, output: dist).
 //   fonts/…        from catalog/fonts.json + the Fontsource packages
 //   js|css|images  copied from public/<type>/<name>/<version>/
 //   index.json, fonts/index.json   the catalog

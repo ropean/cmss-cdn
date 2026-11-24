@@ -13,7 +13,7 @@ https://cdn.cmss.io/<type>/<name>/<version>/<file>
 | `css`    | Stylesheets                   | `https://cdn.cmss.io/css/<name>/<version>/<name>.css`                                 |
 | `images` | Images, icons, other binaries | `https://cdn.cmss.io/images/<name>/<version>/<file>`                                  |
 
-Root files: `/index.html` (search page), `/index.json` (catalog of everything), `/fonts/index.json`
+Root files: `/index.html` (search page), `/favicon.svg` and `/favicon.ico` (its icon), `/index.json` (catalog of everything), `/fonts/index.json`
 (the fonts only), `/_headers` (response headers, Cloudflare-style).
 
 ## Rules
