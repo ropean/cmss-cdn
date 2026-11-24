@@ -14,7 +14,7 @@ The source of https://cdn.cmss.io: fonts, later js/css/images. Read
 - **Dependencies are pinned**: exact versions in `package.json` (no `^` / `~`), `bun add -E <pkg>`; commit
   `bun.lock` and `pnpm-lock.yaml` together (`pnpm install --lockfile-only` after `bun add`).
 - **Every tracked file and folder is lowercase, words joined with `-`** (`build-fonts.mjs`). Exceptions are
-  listed in `scripts/check-names.mjs` (`*.md` in UPPER-KEBAB, dotfiles, `_headers`).
+  listed in `scripts/check-names.mjs` (`*.md` in UPPER-KEBAB, `LICENSE`, dotfiles, `_headers`).
 - Scripts are plain ESM `.mjs` (Node >= 22 and Bun both run them); no TypeScript build step.
 - Fonts are built from npm, never committed. A published version never changes: to change anything, publish
   a new version (a `rev` in `catalog/fonts.json` adds `-r<rev>`).

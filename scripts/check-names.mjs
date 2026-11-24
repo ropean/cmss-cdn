@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Naming rule (CLAUDE.md): every tracked file and folder name is lowercase, words joined with "-"
-// (dots only before extensions). Exceptions: *.md in UPPER-KEBAB, dotfiles/folders, `_headers`.
+// (dots only before extensions). Exceptions: *.md in UPPER-KEBAB, LICENSE, dotfiles/folders, `_headers`.
 import { execFileSync } from "node:child_process";
 
 const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], {
@@ -13,7 +13,7 @@ const LOWER = /^[a-z0-9]+(?:[-.][a-z0-9]+)*$/;
 
 function ok(part, leaf) {
   if (part.startsWith(".")) return true;
-  if (leaf && part === "_headers") return true;
+  if (leaf && (part === "_headers" || part === "LICENSE")) return true;
   if (leaf && part.endsWith(".md")) return /^[A-Z0-9]+(?:-[A-Z0-9]+)*\.md$/.test(part);
   return LOWER.test(part);
 }
