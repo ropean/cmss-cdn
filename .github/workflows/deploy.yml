@@ -10,7 +10,7 @@
 # run; a manual run can choose another one. It is independent of the git ref the workflow builds from.
 #
 # Configure in the repository (Settings -> Secrets and variables -> Actions):
-#   PROJECT_HUB_URL         (Variables)  the deploy URL: https://pm.cmss.io/api/deploy
+#   PROJECT_HUB_URL         (Secrets)    the deploy URL: https://pm.cmss.io/api/deploy
 #   PROJECT_HUB_DEPLOY_KEY  (Secrets)    the project's deploy key (Deploys card in Project Hub), phk_...
 name: Deploy
 
@@ -41,14 +41,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      PROJECT_HUB_URL: ${{ vars.PROJECT_HUB_URL }}
+      PROJECT_HUB_URL: ${{ secrets.PROJECT_HUB_URL }}
       PROJECT_HUB_DEPLOY_KEY: ${{ secrets.PROJECT_HUB_DEPLOY_KEY }}
       # Automatic runs always deploy `main`; a manual run deploys the branch it was given.
       BRANCH: ${{ github.event_name == 'workflow_dispatch' && inputs.branch || 'main' }}
     steps:
       - name: Check the deploy settings
         run: |
-          [ -n "$PROJECT_HUB_URL" ] || { echo "::error::Set the repository variable PROJECT_HUB_URL (the deploy URL, e.g. https://pm.cmss.io/api/deploy)"; exit 1; }
+          [ -n "$PROJECT_HUB_URL" ] || { echo "::error::Set the repository secret PROJECT_HUB_URL (the deploy URL, e.g. https://pm.cmss.io/api/deploy)"; exit 1; }
           [ -n "$BRANCH" ] || { echo "::error::The deploy branch is empty"; exit 1; }
           echo "Deploy branch: $BRANCH"
           [ -n "$PROJECT_HUB_DEPLOY_KEY" ] || { echo "::error::Set the repository secret PROJECT_HUB_DEPLOY_KEY"; exit 1; }

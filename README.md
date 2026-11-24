@@ -51,7 +51,7 @@ Two settings are needed (repository **Settings → Secrets and variables → Act
 
 | Name                     | Where     | Value                                                                    |
 | ------------------------ | --------- | ------------------------------------------------------------------------ |
-| `PROJECT_HUB_URL`        | Variables | The deploy URL: `https://pm.cmss.io/api/deploy`                          |
+| `PROJECT_HUB_URL`        | Secrets   | The deploy URL: `https://pm.cmss.io/api/deploy`                          |
 | `PROJECT_HUB_DEPLOY_KEY` | Secrets   | The project's deploy key (`phk_…`, from the project's **Deploys** card)  |
 
 The key is the only credential: keep it as a secret, never in a commit, log or URL. Local deploy:

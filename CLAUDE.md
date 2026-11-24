@@ -23,7 +23,7 @@ The source of https://cdn.cmss.io: fonts, later js/css/images. Read
 ## Deploy
 
 `.github/workflows/deploy.yml` (release published, push of `release*` branch/tag, manual) builds `dist/` and
-publishes it through Project Hub (https://pm.cmss.io/deploy.md). Variable `PROJECT_HUB_URL` (the deploy URL, `https://pm.cmss.io/api/deploy`), secret
+publishes it through Project Hub (https://pm.cmss.io/deploy.md). Secrets `PROJECT_HUB_URL` (the deploy URL, `https://pm.cmss.io/api/deploy`) and
 `PROJECT_HUB_DEPLOY_KEY`. Deploy branch: `main` for automatic runs, the `branch` input for manual runs. Never print or commit the key.
 
 ## Commands
