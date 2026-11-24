@@ -53,9 +53,12 @@ jobs:
           echo "Deploy branch: $BRANCH"
           [ -n "$PROJECT_HUB_DEPLOY_KEY" ] || { echo "::error::Set the repository secret PROJECT_HUB_DEPLOY_KEY"; exit 1; }
 
-      - uses: actions/checkout@v4
+      # Actions are pinned to a commit (tags can move); the comment is the release it belongs to.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.5
 
       - name: Install
         run: bun install --frozen-lockfile
@@ -68,6 +71,8 @@ jobs:
           COMMIT: ${{ github.sha }}
           RAW_MESSAGE: ${{ github.event.release.name || github.event.head_commit.message || github.ref_name }}
         run: |
+          # Without pipefail a failed download (curl) is hidden by `sh`, which exits 0 on an empty script.
+          set -o pipefail
           # deploy.sh takes a note of at most 384 bytes: the first line, trimmed.
           MESSAGE=$(printf '%s' "$RAW_MESSAGE" | head -n 1 | cut -c1-120)
           export MESSAGE
