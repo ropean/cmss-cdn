@@ -1,4 +1,4 @@
-# Cloudflare Pages response headers (docs/SPEC.md rules 3 and 5).
+# Response headers, Cloudflare-style (docs/SPEC.md rules 3 and 5).
 # Every path is cross-origin readable; versioned files never change, so they cache for a year.
 
 /*

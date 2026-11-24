@@ -4,7 +4,7 @@ Guidance for Claude Code in this repository.
 
 ## What this is
 
-The source of https://cdn.cmss.io (Cloudflare Pages): fonts, later js/css/images. Read
+The source of https://cdn.cmss.io: fonts, later js/css/images. Read
 [docs/SPEC.md](docs/SPEC.md) first — URL shape `<type>/<name>/<version>/<file>`, explicit versions (no
 `latest`), published versions are immutable, CORS `*`.
 
@@ -20,6 +20,12 @@ The source of https://cdn.cmss.io (Cloudflare Pages): fonts, later js/css/images
   a new version (a `rev` in `catalog/fonts.json` adds `-r<rev>`).
 - Run `bun run check` before committing (the pre-commit hook does). Never push unless asked.
 
+## Deploy
+
+`.github/workflows/deploy.yml` (release published, push of `release*` branch/tag, manual) builds `dist/` and
+publishes it through Project Hub (https://pm.cmss.io/deploy.md). Variable `PROJECT_HUB_URL` (the deploy URL, `https://pm.cmss.io/api/deploy`), secret
+`PROJECT_HUB_DEPLOY_KEY`. Deploy branch: `main` for automatic runs, the `branch` input for manual runs. Never print or commit the key.
+
 ## Commands
 
 `bun run build | serve | check | format | lint | test`. Single test:
@@ -30,4 +36,4 @@ The source of https://cdn.cmss.io (Cloudflare Pages): fonts, later js/css/images
 `catalog/fonts.json` (what fonts exist) → `scripts/lib/fonts.mjs` (build) → `dist/fonts/<id>/<version>/`.
 `public/<type>/<name>/<version>/` (hand-managed assets) → `scripts/lib/assets.mjs`. Both feed
 `scripts/lib/catalog.mjs` (`index.json`). `site/index.html` is the search page. `public/_headers` is the
-Cloudflare Pages header file. `scripts/lib/spec.mjs` holds the naming regexes — the one place for them.
+response-header file (Cloudflare-style). `scripts/lib/spec.mjs` holds the naming regexes — the one place for them.

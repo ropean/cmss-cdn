@@ -14,7 +14,7 @@ https://cdn.cmss.io/<type>/<name>/<version>/<file>
 | `images` | Images, icons, other binaries | `https://cdn.cmss.io/images/<name>/<version>/<file>`                                  |
 
 Root files: `/index.html` (search page), `/index.json` (catalog of everything), `/fonts/index.json`
-(the fonts only), `/_headers` (Cloudflare Pages response headers).
+(the fonts only), `/_headers` (response headers, Cloudflare-style).
 
 ## Rules
 
@@ -95,7 +95,7 @@ them in the catalog. Entry file of a script or stylesheet: `<name>.js` / `<name>
 - **A font**: `bun add -E @fontsource-variable/<name>` (or `@fontsource/<name>`), add an entry to
   `catalog/fonts.json`, `bun run build`, `bun run check`, commit, deploy.
 - **A font upgrade**: bump the package version (exact). The font then publishes under the new version.
-  Cloudflare Pages replaces the whole site on every deploy, so an old version survives only if it is
+  A deploy replaces the whole site, so an old version survives only if it is
   still built: keep it by installing the old release under an npm alias
   (`bun add -E manrope-5-3-0@npm:@fontsource-variable/manrope@5.3.0`) and keeping a second
   `catalog/fonts.json` entry with the same `id` and `"pkg": "manrope-5-3-0"`. Entries are unique by

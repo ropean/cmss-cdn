@@ -1,8 +1,8 @@
 {
   "name": "cmss-cdn",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
-  "description": "Static assets (fonts, later js/css/images) served from https://cdn.cmss.io on Cloudflare Pages",
+  "description": "Static assets (fonts, later js/css/images) served from https://cdn.cmss.io",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",

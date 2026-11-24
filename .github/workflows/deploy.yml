@@ -1,0 +1,77 @@
+# Build the site (dist/) and publish it through the Project Hub deploy API
+# (https://pm.cmss.io/deploy.md).
+#
+# Runs on:
+#   - a published GitHub release
+#   - a push of a branch or tag whose name starts with "release"
+#   - a manual run (Actions tab -> Deploy -> Run workflow), with a "branch" input
+#
+# The deploy branch (the hub's BRANCH option: which environment gets the site) is `main` for every automatic
+# run; a manual run can choose another one. It is independent of the git ref the workflow builds from.
+#
+# Configure in the repository (Settings -> Secrets and variables -> Actions):
+#   PROJECT_HUB_URL         (Variables)  the deploy URL: https://pm.cmss.io/api/deploy
+#   PROJECT_HUB_DEPLOY_KEY  (Secrets)    the project's deploy key (Deploys card in Project Hub), phk_...
+name: Deploy
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: ["release*"]
+    tags: ["release*"]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Deploy branch (the environment to publish to)
+        type: string
+        default: main
+        required: true
+
+permissions:
+  contents: read
+
+# One deploy at a time; a newer run waits instead of cancelling a deploy that is publishing.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PROJECT_HUB_URL: ${{ vars.PROJECT_HUB_URL }}
+      PROJECT_HUB_DEPLOY_KEY: ${{ secrets.PROJECT_HUB_DEPLOY_KEY }}
+      # Automatic runs always deploy `main`; a manual run deploys the branch it was given.
+      BRANCH: ${{ github.event_name == 'workflow_dispatch' && inputs.branch || 'main' }}
+    steps:
+      - name: Check the deploy settings
+        run: |
+          [ -n "$PROJECT_HUB_URL" ] || { echo "::error::Set the repository variable PROJECT_HUB_URL (the deploy URL, e.g. https://pm.cmss.io/api/deploy)"; exit 1; }
+          [ -n "$BRANCH" ] || { echo "::error::The deploy branch is empty"; exit 1; }
+          echo "Deploy branch: $BRANCH"
+          [ -n "$PROJECT_HUB_DEPLOY_KEY" ] || { echo "::error::Set the repository secret PROJECT_HUB_DEPLOY_KEY"; exit 1; }
+
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Check and build
+        run: bun run check
+
+      - name: Deploy
+        env:
+          COMMIT: ${{ github.sha }}
+          RAW_MESSAGE: ${{ github.event.release.name || github.event.head_commit.message || github.ref_name }}
+        run: |
+          # deploy.sh takes a note of at most 384 bytes: the first line, trimmed.
+          MESSAGE=$(printf '%s' "$RAW_MESSAGE" | head -n 1 | cut -c1-120)
+          export MESSAGE
+          # The client script is served next to the API: <hub>/deploy.sh, <hub>/api/deploy is the deploy URL.
+          HUB=${PROJECT_HUB_URL%/}
+          HUB=${HUB%/api/deploy}
+          curl -fsSL "$HUB/deploy.sh" | sh -s -- dist

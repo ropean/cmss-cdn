@@ -1,6 +1,6 @@
 # cmss-cdn
 
-Static assets served from **https://cdn.cmss.io** (Cloudflare Pages): web fonts now, scripts, stylesheets
+Static assets served from **https://cdn.cmss.io**: web fonts now, scripts, stylesheets
 and images later. The site root is a search page; `/index.json` is the machine-readable catalog.
 
 ```
@@ -30,24 +30,44 @@ site/index.html         the search page
 scripts/                build.mjs, serve.mjs, check.mjs, check-names.mjs, lib/
 tests/                  node:test
 docs/SPEC.md            URL / naming / versioning rules
-dist/                   build output (gitignored) — the Cloudflare Pages output directory
+dist/                   build output (gitignored) — the folder that gets deployed
 ```
 
 Fonts are never committed: they are built from pinned Fontsource npm versions
 (`devDependencies`, exact versions, both lockfiles committed).
 
-## Deploy (Cloudflare Pages)
+## Deploy (Project Hub, GitHub Actions)
 
-| Setting                | Value                                               |
-| ---------------------- | --------------------------------------------------- |
-| Framework preset       | None                                                |
-| Build command          | `npm install -g bun && bun install && bun run build` (or `npm i && npm run build`) |
-| Build output directory | `dist`                                              |
-| Node version           | 22 or newer (`NODE_VERSION` environment variable)   |
-| Custom domain          | `cdn.cmss.io`                                       |
+`.github/workflows/deploy.yml` installs, runs `bun run check` (which builds `dist/`), then publishes `dist/`
+with the Project Hub deploy client (`https://pm.cmss.io/deploy.sh`, see https://pm.cmss.io/deploy.md). It
+runs on:
 
-`dist/_headers` sets `Access-Control-Allow-Origin: *` and the year-long `immutable` cache for versioned
-files; `dist/index.html` and the two `index.json` files always revalidate. Cloudflare Pages replaces the
-whole site on each deploy, so anything that must stay reachable has to still be built (see docs/SPEC.md,
-"A font upgrade"). Nothing here deploys automatically; connect the repository in the Cloudflare dashboard
-(or `wrangler pages deploy dist`) when ready.
+- a **published GitHub release**,
+- a **push of a branch or tag named `release*`**,
+- a **manual run** (Actions → Deploy → Run workflow), which has a **branch** input (default `main`).
+
+Two settings are needed (repository **Settings → Secrets and variables → Actions**):
+
+| Name                     | Where     | Value                                                                    |
+| ------------------------ | --------- | ------------------------------------------------------------------------ |
+| `PROJECT_HUB_URL`        | Variables | The deploy URL: `https://pm.cmss.io/api/deploy`                          |
+| `PROJECT_HUB_DEPLOY_KEY` | Secrets   | The project's deploy key (`phk_…`, from the project's **Deploys** card)  |
+
+The key is the only credential: keep it as a secret, never in a commit, log or URL. Local deploy:
+
+```bash
+bun run build
+PROJECT_HUB_DEPLOY_KEY=phk_... sh -c 'curl -fsSL https://pm.cmss.io/deploy.sh | sh -s -- dist https://pm.cmss.io/api/deploy'
+```
+
+Notes:
+
+- The **deploy branch** (`BRANCH` for the hub: which environment receives the site) is `main` for every automatic
+  run (release published, `release*` push). A manual run publishes to the branch typed in the `branch` input;
+  any branch other than the project's production one is a preview, which only some targets accept. It is
+  independent of the git ref the workflow builds from (the "Use workflow from" selector).
+- Only one deploy runs at a time; a newer run waits for the running one.
+- A deploy replaces the whole site, so anything that must stay reachable has to still be built
+  (docs/SPEC.md, "A font upgrade").
+- `public/_headers` (CORS `*`, year-long `immutable` cache for versioned files) is copied to the site root;
+  it takes effect when the deploy target honours Cloudflare-style `_headers` files.
