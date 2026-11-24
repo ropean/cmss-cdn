@@ -2,299 +2,639 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>cmss CDN</title>
     <meta name="description" content="Search the static assets served from cdn.cmss.io: fonts, scripts, stylesheets, images." />
+    <meta name="theme-color" content="#1d43c8" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="favicon.ico" sizes="any" />
+    <script>
+      // Before first paint, so a saved theme does not flash.
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
+      } catch (e) {}
+    </script>
     <style>
-      :root {
-        --bg: #f7f8fa;
-        --surface: #ffffff;
-        --text: #15181e;
-        --muted: #5b6472;
-        --line: #e2e6ec;
-        --accent: #2563eb;
-        --accent-soft: #e8efff;
-        --code-bg: #f0f2f6;
-        --ok: #15803d;
+      @property --glow {
+        syntax: "<percentage>";
+        inherits: false;
+        initial-value: 20%;
       }
-      @media (prefers-color-scheme: dark) {
-        :root:not([data-theme="light"]) {
-          --bg: #0f1217;
-          --surface: #171b22;
-          --text: #e8ebf0;
-          --muted: #98a1b0;
-          --line: #262c36;
-          --accent: #6b9bff;
-          --accent-soft: #1c2740;
-          --code-bg: #1f242d;
-          --ok: #4ade80;
-        }
+      :root {
+        color-scheme: light dark;
+        --bg: light-dark(#f3f5fa, #0b0f1c);
+        --surface: light-dark(#ffffff, #131929);
+        --sunken: light-dark(#edf0f7, #0d1220);
+        --text: light-dark(#10162a, #eef1fa);
+        --muted: light-dark(#566079, #9aa5c0);
+        --line: light-dark(#dce1ec, #252d43);
+        --accent: light-dark(#1d4ed8, #8fb0ff);
+        --on-accent: light-dark(#ffffff, #0b0f1c);
+        --ok: light-dark(#0f7a43, #5fdc98);
+        --cobalt: #1d43c8;
+        --cobalt-deep: #122a8c;
+        --cobalt-lit: #3f6dff;
+        --guide: #ffc46b;
+        --gutter: 16px;
+        --radius: 22px;
+        --ui: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      :root[data-theme="light"] {
+        color-scheme: light;
       }
       :root[data-theme="dark"] {
-        --bg: #0f1217;
-        --surface: #171b22;
-        --text: #e8ebf0;
-        --muted: #98a1b0;
-        --line: #262c36;
-        --accent: #6b9bff;
-        --accent-soft: #1c2740;
-        --code-bg: #1f242d;
-        --ok: #4ade80;
+        color-scheme: dark;
       }
-      * {
+      *,
+      ::before,
+      ::after {
         box-sizing: border-box;
       }
       html {
         -webkit-text-size-adjust: 100%;
+        scroll-padding-top: 90px;
       }
       body {
         margin: 0;
         background: var(--bg);
         color: var(--text);
-        font: 15px/1.5 system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        font: 16px/1.5 var(--ui);
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      input {
+        font: inherit;
+        color: inherit;
+      }
+      button {
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      [hidden] {
+        display: none !important;
       }
       .wrap {
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 0 16px 64px;
+        max-width: 1200px;
+        margin-inline: auto;
+        padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
       }
-      header {
-        padding: 36px 0 20px;
+      .sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+
+      /* Hero: a specimen sheet. The guide lines are measured from the font on show. */
+      .hero {
+        position: relative;
+        overflow: clip;
+        color: #fff;
+        background:
+          radial-gradient(90% 70% at var(--glow) 15%, var(--cobalt-lit), transparent 70%),
+          linear-gradient(160deg, var(--cobalt), var(--cobalt-deep));
+        animation: drift 18s ease-in-out infinite alternate;
+      }
+      @keyframes drift {
+        to {
+          --glow: 90%;
+        }
+      }
+      .hero :focus-visible {
+        outline-color: #fff;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: calc(12px + env(safe-area-inset-top));
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .brand svg {
+        width: 30px;
+        height: 30px;
+      }
+      .icon-btn {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgb(255 255 255 / 0.28);
+        border-radius: 50%;
+        background: rgb(255 255 255 / 0.1);
+        color: #fff;
+        transition: background 0.2s;
+      }
+      .icon-btn:hover {
+        background: rgb(255 255 255 / 0.22);
+      }
+      .icon-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+      .hero-grid {
+        display: grid;
+        gap: 4px;
+        padding-block: 20px 36px;
       }
       h1 {
-        margin: 0 0 4px;
-        font-size: 26px;
-        letter-spacing: -0.01em;
-      }
-      .sub {
         margin: 0;
-        color: var(--muted);
+        max-width: 12ch;
+        font-size: clamp(2.5rem, 11vw, 4.75rem);
+        font-weight: 750;
+        line-height: 1;
+        letter-spacing: -0.035em;
+        text-wrap: balance;
       }
-      .sub code,
-      footer code {
-        background: var(--code-bg);
-        padding: 1px 6px;
-        border-radius: 5px;
-        font-size: 13px;
+      .lede {
+        max-width: 42ch;
+        margin: 16px 0 0;
+        color: rgb(255 255 255 / 0.86);
+        font-size: 1.0625rem;
+        text-wrap: pretty;
       }
+      .stats {
+        display: flex;
+        gap: 28px;
+        margin: 22px 0 0;
+      }
+      .stats div {
+        display: flex;
+        flex-direction: column-reverse;
+      }
+      .stats dt {
+        color: rgb(255 255 255 / 0.8);
+        font-size: 0.875rem;
+      }
+      .stats dd {
+        margin: 0;
+        font-size: 1.625rem;
+        font-weight: 700;
+        line-height: 1.2;
+        font-variant-numeric: tabular-nums;
+      }
+      .stage {
+        margin: 0;
+        min-width: 0;
+      }
+      .stage svg.sheet {
+        display: block;
+        width: 100%;
+        max-height: 460px;
+        overflow: visible;
+      }
+      .sheet .guide {
+        transition: transform 0.7s var(--ease);
+      }
+      .sheet .guide line {
+        stroke: var(--guide);
+        stroke-width: 1;
+        stroke-dasharray: 2 4;
+        vector-effect: non-scaling-stroke;
+      }
+      .sheet .guide.base line {
+        stroke-dasharray: none;
+      }
+      .sheet .guide text {
+        fill: var(--guide);
+        font: 500 13px var(--ui);
+      }
+      .sheet .glyph {
+        fill: #fff;
+        text-anchor: middle;
+      }
+      .glyph.in {
+        animation: glyph-in 0.6s var(--ease);
+      }
+      @keyframes glyph-in {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+          filter: blur(8px);
+        }
+      }
+      .stage figcaption {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 44px;
+      }
+      .stage a {
+        padding-block: 10px;
+        color: #fff;
+        font-size: 1.125rem;
+        font-weight: 600;
+        text-underline-offset: 5px;
+        text-decoration-color: rgb(255 255 255 / 0.5);
+      }
+
+      /* Toolbar */
       .bar {
         position: sticky;
         top: 0;
-        z-index: 2;
-        background: var(--bg);
-        padding: 10px 0 12px;
+        z-index: 5;
+        border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--bg) 78%, transparent);
+        -webkit-backdrop-filter: blur(18px) saturate(1.6);
+        backdrop-filter: blur(18px) saturate(1.6);
       }
-      .search {
+      .bar .wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding-block: 10px;
+      }
+      .field {
         width: 100%;
-        height: 46px;
-        padding: 0 14px;
+        min-width: 0;
+        height: 48px;
+        padding: 0 18px;
         border: 1px solid var(--line);
-        border-radius: 10px;
+        border-radius: 999px;
         background: var(--surface);
-        color: var(--text);
-        font: inherit;
-        font-size: 16px;
+        font-size: 16px; /* below 16px iOS zooms in on focus */
+        transition: border-color 0.2s;
       }
-      .search:focus {
-        outline: 2px solid var(--accent);
-        outline-offset: 1px;
+      .field::placeholder {
+        color: var(--muted);
+        opacity: 1;
+      }
+      .field:hover {
+        border-color: var(--accent);
       }
       .chips {
+        grid-column: 1 / -1;
         display: flex;
-        flex-wrap: wrap;
         gap: 8px;
-        margin-top: 10px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .chips:empty {
+        display: none;
       }
       .chip {
+        flex: none;
+        min-height: 44px;
+        padding: 0 16px;
         border: 1px solid var(--line);
+        border-radius: 999px;
         background: var(--surface);
         color: var(--muted);
-        border-radius: 999px;
-        padding: 4px 12px;
-        font: inherit;
-        font-size: 13px;
-        cursor: pointer;
+        font-size: 0.9375rem;
       }
       .chip[aria-pressed="true"] {
-        background: var(--accent-soft);
         border-color: var(--accent);
-        color: var(--accent);
+        background: var(--accent);
+        color: var(--on-accent);
       }
       .count {
-        margin: 6px 0 0;
+        margin: 24px 0 12px;
         color: var(--muted);
-        font-size: 13px;
+        font-size: 0.9375rem;
       }
+
+      /* Cards */
       .grid {
         display: grid;
-        gap: 12px;
-        margin-top: 8px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
       }
       .card {
-        background: var(--surface);
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 20px;
         border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 14px 16px;
+        border-radius: var(--radius);
+        background: var(--surface);
+        container-type: inline-size;
+        transition:
+          border-color 0.25s,
+          box-shadow 0.25s;
+      }
+      @media (hover: hover) {
+        .card:hover {
+          border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+          box-shadow: 0 18px 44px -24px color-mix(in srgb, var(--cobalt) 60%, transparent);
+        }
+      }
+      .card:target {
+        border-color: var(--accent);
       }
       .head {
         display: flex;
         flex-wrap: wrap;
         align-items: baseline;
-        gap: 8px;
+        justify-content: space-between;
+        gap: 0 12px;
       }
-      .title {
-        font-size: 17px;
+      h2 {
+        margin: 0;
+        font-size: 1.0625rem;
         font-weight: 650;
-      }
-      .badge {
-        font-size: 12px;
-        color: var(--muted);
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        padding: 0 6px;
-      }
-      .badge.type {
-        color: var(--accent);
-        border-color: var(--accent);
+        line-height: 1.4;
       }
       .meta {
         color: var(--muted);
-        font-size: 13px;
-        margin-left: auto;
+        font-size: 0.875rem;
+        font-variant-numeric: tabular-nums;
       }
       .preview {
-        margin: 10px 0 4px;
-        font-size: 24px;
-        line-height: 1.35;
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-height: 3.8em;
+        margin: 0;
+        padding-block: 0.35em;
+        font-size: clamp(1.75rem, 9.5cqi, 2.75rem);
+        line-height: 1.22;
         overflow-wrap: anywhere;
       }
-      .preview.img img {
-        max-height: 96px;
+      .preview span {
+        text-wrap: balance;
+        min-width: 0;
         max-width: 100%;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--code-bg);
       }
-      .row {
+      .preview img {
+        max-width: 100%;
+        max-height: 140px;
+      }
+      .tune {
         display: flex;
-        align-items: stretch;
-        gap: 8px;
-        margin-top: 8px;
+        align-items: center;
+        gap: 12px;
+        min-height: 44px;
+        margin-bottom: 10px;
+        font-size: 0.875rem;
+        color: var(--muted);
       }
-      .row code {
+      .tune output {
+        width: 3ch;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+      }
+      .tune input {
         flex: 1;
         min-width: 0;
-        display: block;
-        background: var(--code-bg);
-        border-radius: 8px;
-        padding: 7px 10px;
-        font: 12.5px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        overflow-x: auto;
-        white-space: nowrap;
+        height: 44px;
+        margin: 0;
+        accent-color: var(--accent);
+      }
+      .ital {
+        width: 44px;
+        height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: none;
+        color: var(--text);
+        font: italic 1.125rem Georgia, serif;
+      }
+      .ital[aria-pressed="true"] {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: var(--on-accent);
+      }
+      .code {
+        border-radius: 14px;
+        background: var(--sunken);
+      }
+      .tabs {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        padding: 4px 4px 0 6px;
+      }
+      .tab {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0 10px;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+      .tab[aria-pressed="true"] {
+        color: var(--text);
+        font-weight: 650;
+        box-shadow: inset 0 -2px var(--accent);
       }
       .copy {
-        flex: none;
-        min-width: 64px;
-        border: 1px solid var(--line);
-        background: var(--surface);
-        color: var(--text);
-        border-radius: 8px;
-        padding: 0 12px;
-        font: inherit;
-        font-size: 13px;
-        cursor: pointer;
+        min-width: 84px;
+        min-height: 44px;
+        margin-left: auto;
+        border: 0;
+        border-radius: 11px;
+        background: var(--accent);
+        color: var(--on-accent);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        transition:
+          background 0.2s,
+          scale 0.2s var(--ease);
       }
-      .copy:hover {
-        border-color: var(--accent);
+      .copy:active {
+        scale: 0.95;
       }
       .copy.done {
-        color: var(--ok);
-        border-color: var(--ok);
+        background: var(--ok);
       }
-      .label {
-        margin: 10px 0 0;
+      .code code {
+        display: block;
+        padding: 12px 36px 14px 16px;
+        font: 0.8125rem/1.5 var(--mono);
+        font-variant-ligatures: none;
+        white-space: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+      }
+      .note {
+        grid-column: 1 / -1;
+        padding: 72px 0;
         color: var(--muted);
-        font-size: 12px;
-      }
-      .empty,
-      .error {
         text-align: center;
-        color: var(--muted);
-        padding: 48px 0;
       }
       footer {
-        margin-top: 32px;
+        margin-top: 48px;
+        padding-bottom: calc(40px + env(safe-area-inset-bottom));
         color: var(--muted);
-        font-size: 13px;
+        font-size: 0.9375rem;
+      }
+      footer p {
+        max-width: 62ch;
+        margin: 0;
       }
       footer a {
         color: var(--accent);
+        text-underline-offset: 3px;
       }
-      @media (max-width: 520px) {
-        h1 {
-          font-size: 22px;
+
+      @media (min-width: 720px) {
+        :root {
+          --gutter: 28px;
         }
-        .meta {
-          margin-left: 0;
-          width: 100%;
+        .stage svg.sheet {
+          max-height: 340px;
+        }
+        .sheet .guide text {
+          font-size: 11px;
+        }
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 20px;
+        }
+        .card {
+          padding: 26px;
+        }
+      }
+      @media (min-width: 960px) {
+        .hero-grid {
+          grid-template-columns: 5fr 6fr;
+          align-items: center;
+          gap: 40px;
+          padding-block: 28px 52px;
+        }
+        .stage svg.sheet {
+          max-height: 460px;
+        }
+      }
+
+      /* Cards rise as they scroll in (scroll-driven, no script). */
+      @media (prefers-reduced-motion: no-preference) {
+        @supports (animation-timeline: view()) {
+          .card {
+            animation: rise linear both;
+            animation-timeline: view();
+            animation-range: entry 0% entry 45%;
+          }
+          @keyframes rise {
+            from {
+              opacity: 0.25;
+              translate: 0 32px;
+            }
+          }
+        }
+        ::view-transition-group(*) {
+          animation-duration: 0.35s;
+          animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+          animation: none !important;
+          transition: none !important;
         }
       }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <header>
-        <h1>cmss CDN</h1>
-        <p class="sub">
-          Static assets for cmss sites — <code>https://cdn.cmss.io/&lt;type&gt;/&lt;name&gt;/&lt;version&gt;/&lt;file&gt;</code>
-        </p>
-      </header>
-
-      <div class="bar">
-        <input
-          id="q"
-          class="search"
-          type="search"
-          placeholder="Search fonts, scripts, styles, images…   ( / )"
-          autocomplete="off"
-          spellcheck="false"
-          aria-label="Search assets"
-        />
-        <div class="chips" id="chips" role="group" aria-label="Type"></div>
-        <p class="count" id="count" aria-live="polite"></p>
+    <header class="hero">
+      <div class="wrap">
+        <div class="top">
+          <div class="brand">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <rect width="32" height="32" rx="7" fill="#fff" />
+              <path d="M9 22V10h3l4 7 4-7h3v12h-3v-7l-4 7-4-7v7z" fill="#1d43c8" />
+            </svg>
+            cmss CDN
+          </div>
+          <button id="theme" class="icon-btn" type="button" aria-label="Switch light or dark theme">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+              <path d="M10 3a7 7 0 0 1 0 14z" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+        <div class="hero-grid">
+          <div>
+            <h1>Type, ready to link.</h1>
+            <p class="lede">Find a font, try it here, copy one line. Every version stays exactly as published.</p>
+            <dl class="stats" id="stats" hidden></dl>
+          </div>
+          <figure class="stage" id="stage">
+            <svg class="sheet" viewBox="0 0 400 290" aria-hidden="true">
+              <g id="guides"></g>
+              <text id="glyph" class="glyph" x="220" y="205" font-size="230"></text>
+            </svg>
+            <figcaption>
+              <a id="stage-name" href="#list" hidden></a>
+              <button id="pause" class="icon-btn" type="button" aria-label="Pause the specimen" hidden>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path id="pause-icon" d="M6 4h3v12H6zM11 4h3v12h-3z" fill="currentColor" /></svg>
+              </button>
+            </figcaption>
+          </figure>
+        </div>
       </div>
+    </header>
 
-      <main id="list" class="grid"></main>
+    <div class="bar">
+      <div class="wrap">
+        <input id="q" class="field" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search assets" />
+        <input id="sample" class="field" type="text" placeholder="Preview text" autocomplete="off" spellcheck="false" maxlength="120" aria-label="Preview text" />
+        <div class="chips" id="chips" role="group" aria-label="Type"></div>
+      </div>
+    </div>
 
+    <div class="wrap">
+      <p class="count" id="count" aria-live="polite"></p>
+      <main id="list" class="grid"><p class="note">Loading the catalog…</p></main>
       <footer>
-        Every version is immutable and served with CORS <code>*</code>. Catalog:
-        <a href="index.json">index.json</a> · fonts only: <a href="fonts/index.json">fonts/index.json</a>.
+        <p>
+          Addresses follow <code>/type/name/version/file</code> and work from any site. Catalog:
+          <a href="index.json">index.json</a>, fonts only: <a href="fonts/index.json">fonts/index.json</a>.
+        </p>
       </footer>
     </div>
+    <div id="say" class="sr" role="status"></div>
+    <noscript><p class="note">The catalog needs JavaScript. The raw list is at <a href="index.json">index.json</a>.</p></noscript>
 
     <script>
       (function () {
         "use strict";
-        var TYPES = ["fonts", "js", "css", "images"];
-        var LABEL = { fonts: "Fonts", js: "Scripts", css: "Styles", images: "Images" };
-        var IMG = /\.(png|jpe?g|gif|webp|avif|svg|ico)$/i;
+        const TYPES = ["fonts", "js", "css", "images"];
+        const LABEL = { fonts: "Fonts", js: "Scripts", css: "Styles", images: "Images" };
+        const IMG = /\.(png|jpe?g|gif|webp|avif|svg|ico)$/i;
+        const PLAY = "M6 4l10 6-10 6z";
+        const PAUSE = "M6 4h3v12H6zM11 4h3v12h-3z";
+        const $ = (id) => document.getElementById(id);
+        const still = matchMedia("(prefers-reduced-motion: reduce)");
 
-        var $q = document.getElementById("q");
-        var $chips = document.getElementById("chips");
-        var $count = document.getElementById("count");
-        var $list = document.getElementById("list");
-        var items = [];
-        var base = location.origin;
-        var type = "";
-        var loaded = {};
+        let items = [];
+        let cards = []; // { item, node, text }, one per item, built once and then only shown or hidden
+        let base = location.origin;
+        let type = "";
+        const loaded = new Map();
 
         function el(tag, cls, text) {
-          var e = document.createElement(tag);
+          const e = document.createElement(tag);
           if (cls) e.className = cls;
           if (text != null) e.textContent = text;
           return e;
+        }
+
+        function button(cls, text, onClick) {
+          const b = el("button", cls, text);
+          b.type = "button";
+          b.addEventListener("click", onClick);
+          return b;
         }
 
         function human(n) {
@@ -303,199 +643,402 @@
           return (n / 1048576).toFixed(1) + " MB";
         }
 
-        function sample(item) {
-          return /-sc$/.test(item.name) ? "天地玄黄 宇宙洪荒 Aa 0123" : "The quick brown fox jumps over the lazy dog 0123";
+        const isChinese = (item) => /-sc$/.test(item.name);
+        const abs = (path) => base.replace(/\/$/, "") + "/" + path;
+        const idOf = (item) => [item.type, item.name, item.version].join("-").replace(/[^a-z0-9-]/g, "_");
+
+        function sampleOf(item) {
+          if (isChinese(item)) return "天地玄黄，宇宙洪荒";
+          if (/mono/.test(item.name)) return "const answer = 42;";
+          return "Quick wizards judge my vow";
         }
 
-        function abs(path) {
-          return base.replace(/\/$/, "") + "/" + path;
+        function snippetsOf(item) {
+          const url = item.url; // always the canonical cdn.cmss.io address, also on a preview host
+          if (item.type === "fonts")
+            return [
+              ["HTML", '<link rel="stylesheet" href="' + url + '" />'],
+              ["CSS", 'font-family: "' + item.title + '", sans-serif;'],
+              ["Import", '@import url("' + url + '");'],
+            ];
+          if (item.type === "css")
+            return [
+              ["HTML", '<link rel="stylesheet" href="' + url + '" />'],
+              ["URL", url],
+            ];
+          if (item.type === "js")
+            return [
+              ["HTML", '<script src="' + url + '"><\/script>'],
+              ["URL", url],
+            ];
+          return [["URL", url]];
         }
 
-        function snippetOf(item) {
-          var url = item.url; // always the canonical cdn.cmss.io address, also on a preview host
-          if (item.type === "fonts" || item.type === "css")
-            return '<link rel="stylesheet" href="' + url + '" />';
-          if (item.type === "js") return '<script src="' + url + '"><\/script>';
-          return url;
-        }
-
-        function copyButton(text) {
-          var b = el("button", "copy", "Copy");
-          b.type = "button";
-          b.addEventListener("click", function () {
-            var done = function () {
-              b.textContent = "Copied";
-              b.classList.add("done");
-              setTimeout(function () {
-                b.textContent = "Copy";
-                b.classList.remove("done");
-              }, 1200);
-            };
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-              navigator.clipboard.writeText(text).then(done, function () {});
-            } else {
-              var t = el("textarea");
-              t.value = text;
-              document.body.appendChild(t);
-              t.select();
-              try {
-                document.execCommand("copy");
-                done();
-              } catch (e) {}
-              document.body.removeChild(t);
-            }
-          });
-          return b;
-        }
-
-        function line(text) {
-          var r = el("div", "row");
-          r.appendChild(el("code", "", text));
-          r.appendChild(copyButton(text));
-          return r;
-        }
-
+        /** Load a font's stylesheet once; resolves to its @font-face descriptors (weights, styles). */
         function loadFont(item) {
-          var key = item.name + "@" + item.version;
-          if (loaded[key]) return;
-          loaded[key] = true;
-          var l = el("link");
-          l.rel = "stylesheet";
-          l.href = abs(item.entry);
-          document.head.appendChild(l);
+          const key = item.name + "@" + item.version;
+          if (!loaded.has(key))
+            loaded.set(
+              key,
+              new Promise((resolve, reject) => {
+                const l = el("link");
+                l.rel = "stylesheet";
+                l.href = abs(item.entry);
+                l.onload = () => {
+                  const faces = [...document.fonts].filter((f) => f.family.replace(/["']/g, "") === item.title);
+                  const weights = faces.flatMap((f) =>
+                    f.weight.split(" ").map((w) => ({ normal: 400, bold: 700 })[w] || Number(w)),
+                  );
+                  resolve({
+                    min: Math.min(...weights),
+                    max: Math.max(...weights),
+                    variable: faces.some((f) => f.weight.includes(" ")),
+                    italic: faces.some((f) => f.style === "italic"),
+                  });
+                };
+                l.onerror = () => reject(new Error(item.entry));
+                document.head.appendChild(l);
+              }),
+            );
+          return loaded.get(key);
         }
 
-        var io =
+        async function copy(text) {
+          if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+          const t = el("textarea");
+          t.value = text;
+          document.body.appendChild(t);
+          t.select();
+          const ok = document.execCommand("copy");
+          t.remove();
+          if (!ok) throw new Error("copy");
+        }
+
+        function codeBox(item) {
+          const snippets = snippetsOf(item);
+          let current = snippets[0][1];
+          const box = el("div", "code");
+          const tabs = el("div", "tabs");
+          const code = el("code", "", current);
+          code.tabIndex = 0;
+          snippets.forEach(([label, text], i) => {
+            const t = button("tab", label, () => {
+              current = text;
+              code.textContent = text;
+              code.scrollLeft = 0;
+              for (const o of tabs.querySelectorAll(".tab")) o.setAttribute("aria-pressed", String(o === t));
+            });
+            t.setAttribute("aria-pressed", String(i === 0));
+            tabs.appendChild(t);
+          });
+          let timer;
+          const b = button("copy", "Copy", () => {
+            copy(current).then(
+              () => finish("Copied", true),
+              () => finish("Failed", false),
+            );
+          });
+          function finish(label, ok) {
+            b.textContent = label;
+            b.classList.toggle("done", ok);
+            $("say").textContent = ok ? "Copied " + current : "Copying failed";
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              b.textContent = "Copy";
+              b.classList.remove("done");
+            }, 1400);
+          }
+          tabs.appendChild(b);
+          box.append(tabs, code);
+          return box;
+        }
+
+        function tuner(item, text) {
+          const row = el("div", "tune");
+          loadFont(item).then((f) => {
+            if (f.max > f.min) {
+              const range = el("input");
+              range.type = "range";
+              range.min = f.min;
+              range.max = f.max;
+              range.step = f.variable ? 1 : 100;
+              range.value = 400;
+              range.setAttribute("aria-label", item.title + " weight");
+              const out = el("output", "", range.value);
+              range.addEventListener("input", () => {
+                out.textContent = range.value;
+                text.style.fontWeight = range.value;
+              });
+              row.append("Weight", range, out);
+            }
+            if (f.italic) {
+              const b = button("ital", "I", () => {
+                const on = b.getAttribute("aria-pressed") !== "true";
+                b.setAttribute("aria-pressed", String(on));
+                text.style.fontStyle = on ? "italic" : "normal";
+              });
+              b.setAttribute("aria-pressed", "false");
+              b.setAttribute("aria-label", item.title + " italic");
+              row.appendChild(b);
+            }
+          }, () => {
+            row.textContent = "The preview could not load.";
+          });
+          return row;
+        }
+
+        const whenNear =
           "IntersectionObserver" in window
             ? new IntersectionObserver(
-                function (entries) {
-                  entries.forEach(function (en) {
-                    if (!en.isIntersecting) return;
-                    io.unobserve(en.target);
-                    loadFont(en.target._item);
-                  });
+                (entries) => {
+                  for (const en of entries) {
+                    if (!en.isIntersecting) continue;
+                    whenNear.unobserve(en.target);
+                    en.target._near();
+                  }
                 },
-                { rootMargin: "200px" },
+                { rootMargin: "300px" },
               )
             : null;
 
         function card(item) {
-          var c = el("article", "card");
-          var head = el("div", "head");
-          head.appendChild(el("span", "title", item.title || item.name));
-          head.appendChild(el("span", "badge type", item.type));
-          head.appendChild(el("span", "badge", item.version));
-          head.appendChild(
-            el("span", "meta", item.files + " file" + (item.files === 1 ? "" : "s") + " · " + human(item.bytes)),
+          const node = el("article", "card");
+          node.id = idOf(item);
+          node.style.viewTransitionName = "card-" + node.id;
+          const head = el("div", "head");
+          head.append(
+            el("h2", "", item.title || item.name),
+            el("span", "meta", item.version + ", " + item.files + (item.files === 1 ? " file, " : " files, ") + human(item.bytes)),
           );
-          c.appendChild(head);
+          node.appendChild(head);
 
+          let text = null;
           if (item.type === "fonts") {
-            var p = el("div", "preview", sample(item));
-            p.style.fontFamily = '"' + item.title + '", system-ui, sans-serif';
-            p._item = item;
-            c.appendChild(p);
-            if (io) io.observe(p);
-            else loadFont(item);
-          } else if (item.type === "images" && item.fileList) {
-            var first = item.fileList.filter(function (f) {
-              return IMG.test(f);
-            })[0];
+            const p = el("p", "preview");
+            text = el("span", "", sampleOf(item));
+            if (isChinese(item)) text.lang = "zh-Hans";
+            text.style.fontFamily = '"' + item.title + '", system-ui, sans-serif';
+            p.appendChild(text);
+            let tune = el("div", "tune");
+            node.append(p, tune);
+            node._near = () => tune.replaceWith((tune = tuner(item, text)));
+            if (whenNear) whenNear.observe(node);
+            else node._near();
+          } else if (item.type === "images") {
+            const first = (item.fileList || []).find((f) => IMG.test(f));
             if (first) {
-              var box = el("div", "preview img");
-              var img = el("img");
+              const box = el("div", "preview");
+              const img = el("img");
               img.loading = "lazy";
               img.alt = item.name;
-              img.src = abs(item.type + "/" + item.name + "/" + item.version + "/" + first);
+              img.src = abs([item.type, item.name, item.version, first].join("/"));
               box.appendChild(img);
-              c.appendChild(box);
+              node.appendChild(box);
             }
           }
-
-          c.appendChild(el("p", "label", item.type === "images" ? "URL" : "HTML"));
-          c.appendChild(line(snippetOf(item)));
-          if (item.type === "fonts") {
-            c.appendChild(el("p", "label", "CSS"));
-            c.appendChild(line('font-family: "' + item.title + '", sans-serif;'));
-          }
-          return c;
-        }
-
-        function match(item, words) {
-          var hay = (item.name + " " + (item.title || "") + " " + item.type + " " + item.version).toLowerCase();
-          return words.every(function (w) {
-            return hay.indexOf(w) !== -1;
-          });
+          node.appendChild(codeBox(item));
+          return { item, node, text };
         }
 
         function render() {
-          var words = $q.value.toLowerCase().split(/\s+/).filter(Boolean);
-          var shown = items.filter(function (i) {
-            return (!type || i.type === type) && match(i, words);
-          });
-          $list.textContent = "";
-          shown.forEach(function (i) {
-            $list.appendChild(card(i));
-          });
-          $count.textContent = shown.length + " of " + items.length + " item" + (items.length === 1 ? "" : "s");
-          if (!shown.length) $list.appendChild(el("div", "empty", "Nothing matches."));
-          var u = new URL(location.href);
-          if ($q.value) u.searchParams.set("q", $q.value);
-          else u.searchParams.delete("q");
-          if (type) u.searchParams.set("type", type);
-          else u.searchParams.delete("type");
-          history.replaceState(null, "", u);
+          const words = $("q").value.toLowerCase().split(/\s+/).filter(Boolean);
+          let n = 0;
+          for (const { item, node } of cards) {
+            const hay = [item.name, item.title || "", item.type, item.version].join(" ").toLowerCase();
+            const show = (!type || item.type === type) && words.every((w) => hay.includes(w));
+            node.hidden = !show;
+            if (show) n++;
+          }
+          $("empty").hidden = n > 0;
+          $("count").textContent = n === items.length ? n + (n === 1 ? " item" : " items") : n + " of " + items.length + " items";
+          const u = new URL(location.href);
+          for (const [k, v] of [
+            ["q", $("q").value],
+            ["type", type],
+          ])
+            if (v) u.searchParams.set(k, v);
+            else u.searchParams.delete(k);
+          try {
+            history.replaceState(null, "", u);
+          } catch (e) {} // Safari limits how often this may be called
+        }
+
+        function renderSample() {
+          const own = $("sample").value.trim();
+          for (const c of cards) if (c.text) c.text.textContent = own || sampleOf(c.item);
         }
 
         function renderChips() {
-          $chips.textContent = "";
-          [""].concat(TYPES).forEach(function (t) {
-            var n = t
-              ? items.filter(function (i) {
-                  return i.type === t;
-                }).length
-              : items.length;
-            if (t && !n) return;
-            var b = el("button", "chip", (t ? LABEL[t] : "All") + " · " + n);
-            b.type = "button";
-            b.setAttribute("aria-pressed", String(type === t));
-            b.addEventListener("click", function () {
+          const used = TYPES.filter((t) => items.some((i) => i.type === t));
+          $("chips").textContent = "";
+          if (used.length < 2) return;
+          for (const t of ["", ...used]) {
+            const n = t ? items.filter((i) => i.type === t).length : items.length;
+            const b = button("chip", (t ? LABEL[t] : "All") + " " + n, () => {
               type = t;
-              renderChips();
-              render();
+              for (const o of $("chips").children) o.setAttribute("aria-pressed", String(o === b));
+              if (document.startViewTransition && !still.matches) document.startViewTransition(render);
+              else render();
             });
-            $chips.appendChild(b);
-          });
+            b.setAttribute("aria-pressed", String(type === t));
+            $("chips").appendChild(b);
+          }
         }
 
-        $q.addEventListener("input", render);
-        document.addEventListener("keydown", function (e) {
-          if (e.key === "/" && document.activeElement !== $q) {
-            e.preventDefault();
-            $q.focus();
+        function renderStats() {
+          const sum = (k) => items.reduce((n, i) => n + i[k], 0);
+          const fonts = new Set(items.filter((i) => i.type === "fonts").map((i) => i.name)).size;
+          for (const [label, value] of [
+            ["families", fonts],
+            ["files", sum("files")],
+            ["in total", human(sum("bytes"))],
+          ]) {
+            const d = el("div");
+            d.append(el("dt", "", label), el("dd", "", String(value)));
+            $("stats").appendChild(d);
           }
+          $("stats").hidden = false;
+        }
+
+        // The hero specimen: guide lines come from the metrics of the font on show.
+        function startStage() {
+          const fonts = items.filter((i) => i.type === "fonts");
+          if (!fonts.length) return;
+          const NS = "http://www.w3.org/2000/svg";
+          const BASELINE = 205;
+          const SIZE = 230;
+          const ctx = document.createElement("canvas").getContext("2d");
+          const guides = {};
+          for (const [key, label] of [
+            ["cap", "Cap height"],
+            ["x", "x-height"],
+            ["base", "Baseline"],
+            ["desc", "Descender"],
+          ]) {
+            const g = document.createElementNS(NS, "g");
+            g.setAttribute("class", "guide " + key);
+            const l = document.createElementNS(NS, "line");
+            l.setAttribute("x2", "400");
+            const t = document.createElementNS(NS, "text");
+            t.setAttribute("y", "-5");
+            t.textContent = label;
+            g.append(l, t);
+            g.style.transform = "translateY(" + BASELINE + "px)";
+            $("guides").appendChild(g);
+            guides[key] = g;
+          }
+          let at = Math.max(0, fonts.findIndex((f) => f.name === "newsreader"));
+          let paused = still.matches;
+          let visible = true;
+          let timer;
+
+          async function show(item) {
+            const text = isChinese(item) ? "永" : "Ag";
+            const font = "400 " + SIZE + 'px "' + item.title + '"';
+            await loadFont(item);
+            await document.fonts.load(font, text + "Hxg");
+            ctx.font = font;
+            const m = (s) => ctx.measureText(s);
+            const y = {
+              cap: -m("H").actualBoundingBoxAscent,
+              x: -m("x").actualBoundingBoxAscent,
+              base: 0,
+              desc: m("g").actualBoundingBoxDescent,
+            };
+            for (const k of Object.keys(y)) guides[k].style.transform = "translateY(" + (BASELINE + y[k]) + "px)";
+            const glyph = $("glyph");
+            glyph.textContent = text;
+            glyph.style.fontFamily = '"' + item.title + '"';
+            glyph.classList.remove("in");
+            void glyph.getBoundingClientRect(); // restart the entrance animation
+            glyph.classList.add("in");
+            const name = $("stage-name");
+            name.textContent = item.title;
+            name.href = "#" + idOf(item);
+            name.hidden = false;
+          }
+
+          function schedule() {
+            clearTimeout(timer);
+            if (paused || !visible || document.hidden) return;
+            timer = setTimeout(() => {
+              at = (at + 1) % fonts.length;
+              show(fonts[at]).catch(() => {}).then(schedule);
+            }, 3200);
+          }
+          function renderPause() {
+            $("pause-icon").setAttribute("d", paused ? PLAY : PAUSE);
+            $("pause").setAttribute("aria-label", paused ? "Play the specimen" : "Pause the specimen");
+          }
+          $("pause").addEventListener("click", () => {
+            paused = !paused;
+            renderPause();
+            schedule();
+          });
+          $("stage-name").addEventListener("click", () => {
+            // The linked card may be filtered out.
+            $("q").value = "";
+            type = "";
+            renderChips();
+            render();
+          });
+          $("pause").hidden = false;
+          renderPause();
+          document.addEventListener("visibilitychange", schedule);
+          if ("IntersectionObserver" in window)
+            new IntersectionObserver(([en]) => {
+              visible = en.isIntersecting;
+              schedule();
+            }).observe($("stage"));
+          show(fonts[at]).catch(() => {}).then(schedule);
+        }
+
+        $("q").addEventListener("input", render);
+        $("sample").addEventListener("input", renderSample);
+        $("theme").addEventListener("click", () => {
+          const root = document.documentElement;
+          const now = root.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          root.dataset.theme = now === "dark" ? "light" : "dark";
+          try {
+            localStorage.setItem("theme", root.dataset.theme);
+          } catch (e) {}
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey || e.target.matches("input, textarea")) return;
+          e.preventDefault();
+          $("q").focus();
         });
 
-        var params = new URL(location.href).searchParams;
-        $q.value = params.get("q") || "";
-        type = TYPES.indexOf(params.get("type")) !== -1 ? params.get("type") : "";
+        const params = new URL(location.href).searchParams;
+        $("q").value = params.get("q") || "";
+        type = TYPES.includes(params.get("type")) ? params.get("type") : "";
 
         fetch("index.json", { cache: "no-cache" })
-          .then(function (r) {
+          .then((r) => {
             if (!r.ok) throw new Error("HTTP " + r.status);
             return r.json();
           })
-          .then(function (doc) {
+          .then((doc) => {
             items = doc.items || [];
             // Served from cdn.cmss.io the catalog's base is that origin; any other host (a preview
             // deployment, a local server) uses its own origin so the links keep working.
             base = location.hostname === new URL(doc.base).hostname ? doc.base : location.origin;
+            // The page is set in fonts from its own catalog.
+            for (const name of ["hanken-grotesk", "jetbrains-mono"]) {
+              const own = items.find((i) => i.type === "fonts" && i.name === name);
+              if (own) loadFont(own).catch(() => {});
+            }
+            cards = items.map(card);
+            const empty = el("p", "note", "Nothing matches. Try a shorter word.");
+            empty.id = "empty";
+            $("list").replaceChildren(...cards.map((c) => c.node), empty);
+            renderStats();
             renderChips();
             render();
+            startStage();
           })
-          .catch(function (e) {
-            $list.textContent = "";
-            $list.appendChild(el("div", "error", "Could not load index.json (" + e.message + ")."));
+          .catch((e) => {
+            $("list").replaceChildren(el("p", "note", "Could not load index.json (" + e.message + ")."));
           });
       })();
     </script>
